@@ -15,10 +15,18 @@ class AllOfParser {
   }
 
   generateObject(node) {
-    return node.allOf.reduce(
-      (s, o) => Object.assign(s, this.parser.parse(o)),
-      {}
+    let ret = node.allOf.reduce(
+        (s, o) => (o['x-abstract'] === true) ? {} : Object.assign(s, this.parser.parse(o)),
+        {}
     );
+    let schema = Object.assign({}, node);
+    if (schema.properties) {
+        // eslint-disable-next-line prefer-const
+        for (let key of Object.keys(schema.properties)) {
+            ret[key] = this.parser.parse(schema.properties[key]);
+        }
+    }
+    return ret;
   }
 }
 
