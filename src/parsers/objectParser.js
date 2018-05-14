@@ -7,7 +7,7 @@ class ObjectParser {
   }
 
   canParse(node) {
-    return !!node.properties;
+    return !!node.properties || (typeof node.additionalProperties === 'object');
   }
 
   parse(node) {
@@ -18,11 +18,16 @@ class ObjectParser {
     const ret = {};
     let schema = Object.assign({}, node);
 
-    schema = schema.properties || schema;
-
-    // eslint-disable-next-line prefer-const
-    for (let key of Object.keys(schema)) {
-      ret[key] = this.parser.parse(schema[key]);
+    if (typeof schema.additionalProperties === 'object') {
+      let c = Math.floor(Math.random() * 5);
+      for (let i = 0; i < c; i++) {
+          ret[Math.random().toString(16).substr(2)] = this.parser.parse(schema.additionalProperties);
+      }
+    } else if (schema.properties) {
+      // eslint-disable-next-line prefer-const
+      for (let key of Object.keys(schema.properties)) {
+          ret[key] = this.parser.parse(schema.properties[key]);
+      }
     }
 
     return ret;

@@ -47,6 +47,9 @@ class Parser {
     if (node['x-chance-type']) {
       return chance[node['x-chance-type']](node['x-type-options']);
     }
+    if (node['x-abstract'] === true) {
+        throw new Error("The object is abstract, please set SwaggerReponse or x-change-type/value");
+    }
 
     return this.getParser(node).parse(node);
   }
