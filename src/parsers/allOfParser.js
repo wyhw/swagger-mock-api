@@ -16,7 +16,7 @@ class AllOfParser {
 
   generateObject(node) {
     let ret = node.allOf.reduce(
-        (s, o) => (o['x-abstract'] === true) ? {} : Object.assign(s, this.parser.parse(o)),
+        (s, o) => !!o.properties ? Object.assign(s, this.parser.parse(o)) : {},
         {}
     );
     let schema = Object.assign({}, node);
